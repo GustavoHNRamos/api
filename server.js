@@ -3,17 +3,20 @@ const app = express();
 const port = 3000;
 const bodyParser = require("body-parser");
 const churchesDB = require("./database/churchesDB.json");
+const { getChurches } = require("./controllers/church.js");
+const router = require("./router/churches");
 
-// app.use(bodyParser);
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
+
+app.use(bodyParser.json());
 module.exports = app;
 
 app.listen(port, () => {
   console.log(`Server rodando na porta ${port}`);
 });
 
-app.get("/", (req, res, next) => {
-  res.send({ quantity: churchesDB.length, data: churchesDB });
-  console.log("Funcionou!");
-});
-
-app.get();
+app.use("/", router);

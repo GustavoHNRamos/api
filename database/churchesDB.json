@@ -1,19 +1,19 @@
 [
   {
     "id": "00a80921-88b7-452f-a2bf-d45064e98049",
-    "nome": "Igreja do Zé",
+    "name": "Igreja do Zé",
     "address": "Rua Fulano 120",
     "city": "Curitiba"
   },
   {
     "id": "60c40ef7-568a-4139-b430-31c9965a2758",
-    "nome": "Igreja Comnunhão Cristã Abba",
+    "name": "Igreja Comnunhão Cristã Abba",
     "address": "Rua Não Sei 80",
     "city": "Saõ Paulo"
   },
   {
     "id": "96291529-6fe0-48d0-a6b7-14eacbfeea65",
-    "nome": "Igreja da Esquina",
+    "name": "Igreja da Esquina",
     "address": "Rua Privada",
     "city": "Cascais"
   }
