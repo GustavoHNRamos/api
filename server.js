@@ -1,10 +1,10 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
-const port = 3000;
 const bodyParser = require("body-parser");
-const churchesDB = require("./database/churchesDB.json");
-const { getChurches } = require("./controllers/church.js");
 const router = require("./router/churches");
+const multer = require("multer");
+const upload = multer();
 
 app.use(
   bodyParser.urlencoded({
@@ -15,8 +15,8 @@ app.use(
 app.use(bodyParser.json());
 module.exports = app;
 
-app.listen(port, () => {
-  console.log(`Server rodando na porta ${port}`);
-});
+app.use(router);
 
-app.use("/", router);
+app.listen(process.env.PORT, () => {
+  console.log(`Server rodando na porta ${process.env.PORT}`);
+});
