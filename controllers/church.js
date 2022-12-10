@@ -1,5 +1,3 @@
-const churchesDB = require("../database/churchesDB.json");
-const sendChurch = require("../helper/sendChurch");
 const { responseAPI } = require("../utils/response");
 const { connect, disconnect, runQuery } = require("../database/index");
 const dayjs = require("dayjs");
@@ -12,11 +10,11 @@ const createChurch = async (req, res, next) => {
     const { name, email, phone, address, city } = req.body;
 
     if (!name || !email || !phone || !address || !city) {
-      return responseAPI(res, true, "Required data missing");
+      return responseAPI(res, true, "Required data missing.");
     }
 
     const query =
-      "insert into churches (name, address, city, email, phone, created_at, updated_at) values (?, ?, ?, ?, ?, ?, ?)";
+      "INSERT INTO churches (name, address, city, email, phone, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     const save = await runQuery(query, [
       name,
@@ -43,48 +41,94 @@ const createChurch = async (req, res, next) => {
   next();
 };
 
-const getChurches = (req, res, next) => {
-  res.send(
-    sendChurch(
-      `We found ${churchesDB.length} churches`,
-      churchesDB,
-      churchesDB.length
-    )
-  );
+const getChurches = async (req, res, next) => {
+  try {
+    await connect();
+
+    const query = "SELECT * FROM `churches` LIMIT 0, 1000";
+
+    const save = await runQuery(query);
+
+    await disconnect();
+
+    return responseAPI(res, false, "Churches found", save[0].length, save[0]);
+  } catch (error) {
+    return responseAPI(res, true, "Unable to find churches.");
+  }
   next();
 };
 
-const getChurchById = (req, res, next) => {
-  const churchId = req.params.id;
-  const findChurch = churchesDB.find((church) => church.id === churchId);
-  console.log(findChurch);
-  res.send(sendChurch(`We found ${findChurch.name}`, findChurch));
+const getChurchById = async (req, res, next) => {
+  try {
+    await connect();
+
+    const churchId = req.params.id;
+
+    if (churchId === null) {
+      return responseAPI(res, true, "ID missing");
+    }
+
+    const query = "SELECT * FROM `churches` WHERE id = ?";
+
+    const save = await runQuery(query, [churchId]);
+
+    await disconnect();
+
+    return responseAPI(res, false, "Church found", save[0].length, save[0]);
+  } catch (error) {
+    console.log(error);
+  }
   next();
 };
 
-const updateChurch = (req, res, next) => {
-  const churchId = req.params.id;
-  const body = req.body;
-  const findChurch = churchesDB.findIndex((church) => church.id === churchId);
+// if (churchId === null || req.body === null) {
+//   return responseAPI(res, true, "Information missing");
+// }
 
-  // churchesDB.forEach((e) => {
-  //   Object.entries(e).forEach(([key, value]) => {
-  //     if (churchesDB[value]) {
-  //       e[key] = findChurch[value];
-  //     }
-  //   });
-  // });
+const updateChurch = async (req, res, next) => {
+  try {
+    await connect();
 
-  console.log(findChurch);
-  res.send(body);
+    const churchId = req.params.id;
+
+    const query = "UPDATE churches SET ? = ? WHERE id = ?";
+
+    const keys = Object.keys(req.body);
+    const values = Object.values(req.body);
+
+    const save = await runQuery(query, [keys, values, churchId]);
+
+    console.log(Object.keys(req.body));
+
+    await disconnect();
+
+    return responseAPI(res, false, "Church successfully updated");
+  } catch (error) {
+    console.log(error);
+  }
   next();
 };
 
-const deleteChurch = (req, res, next) => {
-  const churchId = req.params.id;
-  const objWithIdIndex = churchesDB.findIndex((obj) => obj.id === churchId);
-  churchesDB.splice(objWithIdIndex, 1);
-  res.send(churchesDB);
+const deleteChurch = async (req, res, next) => {
+  try {
+    await connect();
+
+    const churchId = req.params.id;
+
+    if (churchId === null) {
+      return responseAPI(res, true, "ID missing");
+    }
+
+    const query = "DELETE FROM churches WHERE id = ?";
+
+    const save = await runQuery(query, [churchId]);
+
+    await disconnect();
+
+    return responseAPI(res, false, "Church successfully deleted");
+  } catch (error) {
+    console.log(error);
+  }
   next();
 };
 
