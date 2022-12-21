@@ -81,24 +81,22 @@ const getChurchById = async (req, res, next) => {
   next();
 };
 
-// if (churchId === null || req.body === null) {
-//   return responseAPI(res, true, "Information missing");
-// }
-
 const updateChurch = async (req, res, next) => {
   try {
     await connect();
 
     const churchId = req.params.id;
 
-    const query = "UPDATE churches SET ? = ? WHERE id = ?";
-
     const keys = Object.keys(req.body);
     const values = Object.values(req.body);
 
-    const save = await runQuery(query, [keys, values, churchId]);
+    console.log(keys.entries());
 
-    console.log(Object.keys(req.body));
+    const query = `UPDATE churches SET ${keys.join(", ")} = ${values.join(
+      ", "
+    )} WHERE id = ?`;
+
+    const save = await runQuery(query, [churchId]);
 
     await disconnect();
 
