@@ -9,10 +9,10 @@ const {
   deleteChurch,
 } = require("../controllers/church");
 
-router.post("/church/create", createChurch);
-router.get("/church", getChurches);
-router.get("/church/:id", getChurchById);
-router.put("/church/update/:id", updateChurch);
-router.delete("/church/delete/:id", deleteChurch);
+router.post("/create", createChurch);
+router.get("/", getChurches);
+router.get("/:id", getChurchById);
+router.put("/update/:id", updateChurch);
+router.delete("/delete/:id", deleteChurch);
 
 module.exports = router;

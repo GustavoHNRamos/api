@@ -36,7 +36,7 @@ const createChurch = async (req, res, next) => {
       req.body
     );
   } catch (error) {
-    console.log(error);
+    return responseAPI(res, true, error);
   }
   next();
 };
@@ -76,7 +76,7 @@ const getChurchById = async (req, res, next) => {
 
     return responseAPI(res, false, "Church found", save[0].length, save[0]);
   } catch (error) {
-    console.log(error);
+    return responseAPI(res, true, error);
   }
   next();
 };
@@ -110,7 +110,7 @@ const updateChurch = async (req, res, next) => {
       save[0].affectedRows
     );
   } catch (error) {
-    console.log(error);
+    return responseAPI(res, true, error);
   }
   next();
 };
@@ -133,7 +133,7 @@ const deleteChurch = async (req, res, next) => {
 
     return responseAPI(res, false, "Church successfully deleted");
   } catch (error) {
-    console.log(error);
+    return responseAPI(res, true, error);
   }
   next();
 };
