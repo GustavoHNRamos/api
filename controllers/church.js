@@ -85,22 +85,30 @@ const updateChurch = async (req, res, next) => {
   try {
     await connect();
 
+    const body = req.body;
     const churchId = req.params.id;
 
-    const keys = Object.keys(req.body);
-    const values = Object.values(req.body);
+    let fields = [];
+    for (key in body) {
+      fields.push(`${key} = '${body[key]}'`);
+    }
 
-    console.log(keys.entries());
-
-    const query = `UPDATE churches SET ${keys.join(", ")} = ${values.join(
-      ", "
-    )} WHERE id = ?`;
+    let query = `
+      UPDATE churches
+      SET ${fields}
+      WHERE id = ${churchId};
+    `;
 
     const save = await runQuery(query, [churchId]);
 
     await disconnect();
 
-    return responseAPI(res, false, "Church successfully updated");
+    return responseAPI(
+      res,
+      false,
+      "Church successfully updated",
+      save[0].affectedRows
+    );
   } catch (error) {
     console.log(error);
   }
